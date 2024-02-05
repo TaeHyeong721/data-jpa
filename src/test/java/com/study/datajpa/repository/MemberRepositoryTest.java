@@ -1,6 +1,8 @@
 package com.study.datajpa.repository;
 
+import com.study.datajpa.dto.MemberDto;
 import com.study.datajpa.entity.Member;
+import com.study.datajpa.entity.Team;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +18,8 @@ class MemberRepositoryTest {
 
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    TeamRepository teamRepository;
 
     @Test
     public void testMember() throws Exception {
@@ -59,5 +63,58 @@ class MemberRepositoryTest {
 
         final long deletedCount = memberRepository.count();
         assertThat(deletedCount).isEqualTo(0);
+    }
+
+    @Test
+    public void findByUsernameAndAgeGreaterThan() {
+        final Member m1 = new Member("AAA", 10);
+        final Member m2 = new Member("AAA", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        final List<Member> result = memberRepository.findByUsernameAndAgeGreaterThan("AAA", 15);
+        assertThat(result.get(0).getUsername()).isEqualTo("AAA");
+        assertThat(result.get(0).getAge()).isEqualTo(20);
+        assertThat(result.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void findUsernameList(){
+        final Member m1 = new Member("AAA", 10);
+        final Member m2 = new Member("BBB", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        final List<String> usernameList = memberRepository.findUsernameList();
+        assertThat(usernameList).containsExactly("AAA", "BBB");
+    }
+
+    @Test
+    public void findMemberDto(){
+        final Team team = new Team("teamA");
+        teamRepository.save(team);
+
+        final Member m1 = new Member("AAA", 10);
+        m1.setTeam(team);
+        memberRepository.save(m1);
+
+        final List<MemberDto> memberDto = memberRepository.findMemberDto();
+
+        assertThat(memberDto.get(0).getUsername()).isEqualTo("AAA");
+        assertThat(memberDto.get(0).getTeamName()).isEqualTo("teamA");
+    }
+
+    @Test
+    public void findByNames(){
+        final Member m1 = new Member("AAA", 10);
+        final Member m2 = new Member("BBB", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        final List<Member> result = memberRepository.findByNames(List.of("AAA", "BBB"));
+        for (Member member : result) {
+            System.out.println("member = " + member);
+        }
+
     }
 }
