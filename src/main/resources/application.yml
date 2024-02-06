@@ -16,6 +16,11 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
 
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+
   h2:
     console:
       enabled: true

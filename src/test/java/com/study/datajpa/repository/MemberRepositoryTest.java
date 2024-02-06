@@ -221,4 +221,9 @@ class MemberRepositoryTest {
 
         em.flush();
     }
+    
+    @Test
+    public void callCustom() throws Exception {
+        final List<Member> result = memberRepository.findMemberCustom();
+    }
 }
