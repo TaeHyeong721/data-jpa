@@ -1,5 +1,6 @@
 package com.study.datajpa.controller;
 
+import com.study.datajpa.dto.MemberDto;
 import com.study.datajpa.entity.Member;
 import com.study.datajpa.repository.MemberRepository;
 import jakarta.annotation.PostConstruct;
@@ -28,8 +29,9 @@ public class MemberController {
     }
 
     @GetMapping("/members")
-    public Page<Member> list(Pageable pageable) {
-        return memberRepository.findAll(pageable);
+    public Page<MemberDto> list(Pageable pageable) {
+        final Page<Member> page = memberRepository.findAll(pageable);
+        return page.map(MemberDto::new);
     }
 
     @PostConstruct
